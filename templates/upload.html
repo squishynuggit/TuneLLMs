@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload and List Files</title>
+</head>
+<body>
+    <h1>Upload a File</h1>
+
+    <form method="POST" action="/" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <h2>List of Uploaded Files</h2>
+
+    {% if files %}
+        <ul>
+        {% for file in files %}
+            <li>
+                {{ file }}
+                <form method="POST" action="{{ url_for('delete_file', filename=file) }}" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No files found in the directory.</p>
+    {% endif %}
+    <button type="submit">Summarize</button>
+</body>
+</html>
