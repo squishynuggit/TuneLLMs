@@ -35,7 +35,7 @@ def split_documents(documents: list[Document]):
     )
     return text_splitter.split_documents(documents)
 
-from Gemini_test import get_embedding_function
+from get_embedding import get_embedding_function
 
 def add_to_chroma(chunks: list[Document]):
     db = Chroma(
