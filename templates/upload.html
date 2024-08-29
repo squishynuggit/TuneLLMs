@@ -39,6 +39,11 @@
     {% else %}
         <p>No files found in the directory.</p>
     {% endif %}
-    <button type="submit">Summarize</button>
+    <form method="POST" action="{{ url_for('summarize') }}">
+        <button type="submit">Summarize</button>
+    </form>
+    <form method="POST" action="{{ url_for('reset') }}">
+        <button type="submit">Reset Database</button>
+    </form>
 </body>
 </html>

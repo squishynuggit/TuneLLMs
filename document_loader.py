@@ -9,11 +9,11 @@ from langchain_chroma import Chroma
 DATA_PATH = "data"
 CHROMA_PATH = 'chroma'
 
-def main():
+def main(reset=False):
     parser = argparse.ArgumentParser()
     parser.add_argument("--reset", action="store_true", help="Reset the database.")
     args = parser.parse_args()
-    if args.reset:
+    if args.reset or reset:
         print("✨ Clearing Database")
         if os.path.exists(CHROMA_PATH):
             shutil.rmtree(CHROMA_PATH)

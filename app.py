@@ -1,5 +1,7 @@
 import os
 from flask import Flask, request, redirect, url_for, render_template, flash
+from query_document import summarize_database
+import document_loader
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'data'
@@ -38,6 +40,9 @@ def upload_and_list_files():
         else:
             flash('Allowed file types are: pdf, txt, docx')
     
+    # Add to chromadb
+    document_loader.main()
+
     # List files in the main upload directory
     files = os.listdir(app.config['UPLOAD_FOLDER']) if os.path.exists(app.config['UPLOAD_FOLDER']) else []
     
@@ -54,6 +59,17 @@ def delete_file(filename):
     else:
         flash(f'File {filename} not found.')
 
+    return redirect(url_for('upload_and_list_files'))
+
+@app.route('/execute_function', methods=['POST'])
+def summarize():
+    result = summarize_database()
+    flash(result)
+    return redirect(url_for('upload_and_list_files'))
+
+@app.route('/reset', methods=['POST'])
+def reset():
+    document_loader.main(True)
     return redirect(url_for('upload_and_list_files'))
 
 if __name__ == "__main__":
