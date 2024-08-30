@@ -49,11 +49,9 @@
     </form>
     {% if result %}
         <h2>Summarized Notes</h2>
-        <ul>
-            {% for line in result %}
-                <p>{{ line|safe }}</p>
-            {% endfor %}
-        </ul>
+        {% for line in result %}
+            <p>{{ line|safe }}</p>
+        {% endfor %}
     {% endif %}
 </body>
 </html>

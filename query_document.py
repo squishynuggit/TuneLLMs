@@ -11,13 +11,13 @@ genai.configure(api_key=GOOGLE_API_KEY)
 CHROMA_PATH = "chroma"
 
 PROMPT_TEMPLATE = """
-Explain the document in detail:
+Answer the question based only on the following context:
 
 {context}
 
 ---
 
-Based on the above, give detailed explanations for each section.: {question}
+Answer the question based on the above context: {question}
 """
 
 SUMMARY_PROMPT_TEMPLATE = """
@@ -27,7 +27,7 @@ SUMMARY_PROMPT_TEMPLATE = """
 
 ---
 
-Summary:
+Give a detailed explanation for each section.
 """
 
 def main():
