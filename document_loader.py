@@ -14,13 +14,10 @@ def main(reset=False):
     parser.add_argument("--reset", action="store_true", help="Reset the database.")
     args = parser.parse_args()
     if args.reset or reset:
-        print("✨ Clearing Database")
-        if os.path.exists(CHROMA_PATH):
-            shutil.rmtree(CHROMA_PATH)
-
+        reset = True
     documents = load_documents()
     chunks = split_documents(documents)
-    add_to_chroma(chunks)
+    add_to_chroma(chunks,reset)
 
 def load_documents():
     document_loader = PyPDFDirectoryLoader(DATA_PATH)
@@ -37,10 +34,15 @@ def split_documents(documents: list[Document]):
 
 from get_embedding import get_embedding_function
 
-def add_to_chroma(chunks: list[Document]):
+def add_to_chroma(chunks: list[Document], reset=False):
     db = Chroma(
         persist_directory=CHROMA_PATH, embedding_function=get_embedding_function()
     )
+    if reset:
+        print("✨ Clearing Database")
+        # if os.path.exists(CHROMA_PATH):
+        #     shutil.rmtree(CHROMA_PATH)
+        db.reset_collection()
     
     # Calculate Page IDs.
     chunks_with_ids = calculate_chunk_ids(chunks)
