@@ -17,7 +17,9 @@
       {% if messages %}
         <ul>
         {% for message in messages %}
-          <li>{{ message }}</li>
+          <li>
+            <p>{{ message }}</p>
+          </li>
         {% endfor %}
         </ul>
       {% endif %}
@@ -45,5 +47,13 @@
     <form method="POST" action="{{ url_for('reset') }}">
         <button type="submit">Reset Database</button>
     </form>
+    {% if result %}
+        <h2>Summarized Notes</h2>
+        <ul>
+            {% for line in result %}
+                <p>{{ line|safe }}</p>
+            {% endfor %}
+        </ul>
+    {% endif %}
 </body>
 </html>

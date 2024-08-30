@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, redirect, url_for, render_template, flash
 from query_document import summarize_database
 import document_loader
+import re
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'data'
@@ -17,6 +18,7 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_and_list_files():
+    result = request.args.get('result', None)
     if request.method == 'POST':
         # Handle file upload
         if 'file' not in request.files:
@@ -61,11 +63,24 @@ def delete_file(filename):
 
     return redirect(url_for('upload_and_list_files'))
 
+### Needs improvement, could use prompt engineering and give a few examples on template
+def process_text(result):
+    processed_result = []
+    for line in result:
+        # Replace **bold** with <strong>bold</strong>
+        line = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', line)
+        # Replace *dotpoint* with <li>dotpoint</li>
+        if line.startswith('* '):
+            line = f"<li>{line[2:]}</li>"
+        processed_result.append(line)
+    return processed_result
+
 @app.route('/execute_function', methods=['POST'])
 def summarize():
     result = summarize_database()
-    flash(result)
-    return redirect(url_for('upload_and_list_files'))
+    result = result.split('\n')
+    result = process_text(result)
+    return render_template('upload.html', files=os.listdir(app.config['UPLOAD_FOLDER']), result=result)
 
 @app.route('/reset', methods=['POST'])
 def reset():
