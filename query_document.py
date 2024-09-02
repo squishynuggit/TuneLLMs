@@ -41,7 +41,7 @@ def main():
         summarize_database()
     elif args.query_text:
         query_text = args.query_text
-        query_rag(query_text.text)
+        query_rag(query_text)
 
 
 def query_rag(query_text: str):
