@@ -4,54 +4,136 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload and List Files</title>
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #f4f4f4;
+            padding: 15px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            height: 100vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+        }
+        .content.expanded {
+            margin-left: 0;
+        }
+        .toggle-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 30px;
+            height: 22px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .toggle-btn span {
+            display: block;
+            height: 4px;
+            background-color: #007bff;
+            border-radius: 2px;
+            transition: background-color 0.2s, transform 0.2s, width 0.2s;
+        }
+        .toggle-btn:hover span {
+            background-color: #0056b3;
+        }
+        .toggle-btn:active span {
+            background-color: #003f7f;
+        }
+        .file-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .file-list li {
+            margin: 10px 0;
+        }
+        .file-list form {
+            display: inline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Upload a File</h1>
+    <div class="toggle-btn" onclick="toggleSidebar()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
 
-    <form method="POST" action="/" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <input type="submit" value="Upload">
-    </form>
+    <div class="sidebar" id="sidebar">
+        <h2>Uploaded Files</h2>
+        {% if files %}
+            <ul class="file-list">
+            {% for file in files %}
+                <li>
+                    {{ file }}
+                    <form method="POST" action="{{ url_for('delete_file', filename=file) }}" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No files found in the directory.</p>
+        {% endif %}
+    </div>
 
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul>
-        {% for message in messages %}
-          <li>
-            <p>{{ message }}</p>
-          </li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+    <div class="content" id="content">
+        <h1>Upload a File</h1>
 
-    <h2>List of Uploaded Files</h2>
+        <form method="POST" action="/" enctype="multipart/form-data">
+            <input type="file" name="file">
+            <input type="submit" value="Upload">
+        </form>
 
-    {% if files %}
-        <ul>
-        {% for file in files %}
-            <li>
-                {{ file }}
-                <form method="POST" action="{{ url_for('delete_file', filename=file) }}" style="display:inline;">
-                    <button type="submit">Delete</button>
-                </form>
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No files found in the directory.</p>
-    {% endif %}
-    <form method="POST" action="{{ url_for('summarize') }}">
-        <button type="submit">Summarize</button>
-    </form>
-    <form method="POST" action="{{ url_for('reset') }}">
-        <button type="submit">Reset Database</button>
-    </form>
-    {% if result %}
-        <h2>Summarized Notes</h2>
-        {% for line in result %}
-            <p>{{ line|safe }}</p>
-        {% endfor %}
-    {% endif %}
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul>
+            {% for message in messages %}
+              <li>
+                <p>{{ message }}</p>
+              </li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('summarize') }}">
+            <button type="submit">Summarize</button>
+        </form>
+        <h3>Don't really need this</h3>
+        <form method="POST" action="{{ url_for('reset') }}">
+            <button type="submit">Reset Database</button>
+        </form>
+        {% if result %}
+            <h2>Summarized Notes</h2>
+            {% for line in result %}
+                <p>{{ line|safe }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById('sidebar');
+            var content = document.getElementById('content');
+            sidebar.classList.toggle('hidden');
+            content.classList.toggle('expanded');
+        }
+    </script>
 </body>
 </html>

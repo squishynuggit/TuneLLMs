@@ -61,6 +61,9 @@ def delete_file(filename):
     else:
         flash(f'File {filename} not found.')
 
+    # Updates database as documents are deleted
+    document_loader.main(True)
+
     return redirect(url_for('upload_and_list_files'))
 
 ### Needs improvement, could use prompt engineering and give a few examples on template
