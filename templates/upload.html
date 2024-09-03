@@ -11,9 +11,11 @@
             font-family: Arial, sans-serif;
         }
         .sidebar {
-            width: 250px;
+            width: 230px;
             background-color: #f4f4f4;
             padding: 15px;
+            padding-top: 50px;
+            padding-left: 30px;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
             height: 100vh;
             overflow-y: auto;
@@ -25,15 +27,16 @@
         .content {
             flex: 1;
             padding: 20px;
+            margin-left: 20px;
             transition: margin-left 0.3s ease;
         }
         .content.expanded {
-            margin-left: 0;
+            margin-left: -215px;
         }
         .toggle-btn {
             position: absolute;
-            top: 15px;
-            left: 15px;
+            top: 30px;
+            left: 30px;
             width: 30px;
             height: 22px;
             cursor: pointer;
@@ -41,19 +44,37 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: transform 0.3s ease;
         }
         .toggle-btn span {
             display: block;
             height: 4px;
-            background-color: #007bff;
+            background-color: #0b0b0b;
             border-radius: 2px;
-            transition: background-color 0.2s, transform 0.2s, width 0.2s;
+            transition: background-color 0.2s, transform 0.3s ease-in-out, width 0.3s ease-in-out;
+        }
+        .toggle-btn span:nth-child(1) {
+            transform-origin: top left;
+        }
+        .toggle-btn span:nth-child(3) {
+            transform-origin: bottom left;
+        }
+        .toggle-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(0px, -1.5px);
+        }
+        .toggle-btn.active span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-4.7px) scale(0.2, 0.2);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .toggle-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(0px, 1.5px);
         }
         .toggle-btn:hover span {
-            background-color: #0056b3;
+            background-color: #494949;
         }
         .toggle-btn:active span {
-            background-color: #003f7f;
+            background-color: #494949;
         }
         .file-list {
             list-style-type: none;
@@ -131,8 +152,10 @@
         function toggleSidebar() {
             var sidebar = document.getElementById('sidebar');
             var content = document.getElementById('content');
+            var toggleBtn = document.querySelector('.toggle-btn');
             sidebar.classList.toggle('hidden');
             content.classList.toggle('expanded');
+            toggleBtn.classList.toggle('active');
         }
     </script>
 </body>
