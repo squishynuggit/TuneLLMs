@@ -10,7 +10,9 @@
             margin: 0;
             font-family: Arial, sans-serif;
         }
+
         .sidebar {
+            position: fixed;
             width: 230px;
             background-color: #f4f4f4;
             padding: 15px;
@@ -18,34 +20,65 @@
             padding-left: 30px;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
             height: 100vh;
-            overflow-y: auto;
             transition: transform 0.3s ease;
         }
+
         .sidebar.hidden {
             transform: translateX(-73%);
         }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 280px;
+            width: calc(100% - 230px);
+            height: 75px;
+            padding-top: 4px;
+            background-color: #f4f4f4;
+            display: flex;
+            align-items: center;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+            z-index: 20;
+            transition: left 0.3s ease, width 0.3s ease;
+        }
+
+        .header.expanded {
+            left: 78px;
+            width: 100%;
+        }
+
+        .header h1 {
+            margin: 0;
+            padding-left: 20px;
+        }
+
         .content {
             flex: 1;
             padding: 20px;
-            margin-left: 20px;
+            margin-left: 290px;
+            margin-top: 60px;
             transition: margin-left 0.3s ease;
+            overflow-y: auto;
         }
+
         .content.expanded {
-            margin-left: -175px;
+            margin-left: 90px;
         }
+
         .toggle-btn {
-            position: absolute;
+            position: fixed;
             top: 30px;
             left: 30px;
             width: 30px;
             height: 22px;
             cursor: pointer;
-            z-index: 10;
+            z-index: 30;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             transition: transform 0.3s ease;
         }
+
         .toggle-btn span {
             display: block;
             height: 4px;
@@ -53,42 +86,55 @@
             border-radius: 2px;
             transition: background-color 0.2s, transform 0.3s ease-in-out, width 0.3s ease-in-out;
         }
+
         .toggle-btn span:nth-child(1) {
             transform-origin: top left;
         }
+
         .toggle-btn span:nth-child(3) {
             transform-origin: bottom left;
         }
+
         .toggle-btn.active span:nth-child(1) {
             transform: rotate(45deg) translate(0px, -1.5px);
         }
+
         .toggle-btn.active span:nth-child(2) {
             opacity: 0;
             transform: translateX(-4.7px) scale(0.2, 0.2);
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
+
         .toggle-btn.active span:nth-child(3) {
             transform: rotate(-45deg) translate(0px, 1.5px);
         }
+
         .toggle-btn:hover span {
             background-color: #494949;
         }
+
         .toggle-btn:active span {
             background-color: #494949;
         }
+
         .file-list {
             list-style-type: none;
             padding: 0;
         }
+
         .file-list li {
             margin: 10px 0;
         }
+
         .file-list form {
             display: inline;
         }
     </style>
 </head>
 <body>
+    <div class="header" id="header">
+        <h1>TuneLLMs Notes Summarizer</h1>
+    </div>
     <div class="toggle-btn" onclick="toggleSidebar()">
         <span></span>
         <span></span>
@@ -152,9 +198,12 @@
         function toggleSidebar() {
             var sidebar = document.getElementById('sidebar');
             var content = document.getElementById('content');
+            var header = document.getElementById('header');
             var toggleBtn = document.querySelector('.toggle-btn');
+
             sidebar.classList.toggle('hidden');
             content.classList.toggle('expanded');
+            header.classList.toggle('expanded');
             toggleBtn.classList.toggle('active');
         }
     </script>
