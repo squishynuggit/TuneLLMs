@@ -179,21 +179,24 @@
           {% endif %}
         {% endwith %}
 
-        <form method="POST" action="{{ url_for('summarize') }}">
-            <button type="submit">Summarize</button>
-        </form>
+        <button id="summarize-btn">Summarize</button>
+
         <h3>Don't really need this</h3>
         <form method="POST" action="{{ url_for('reset') }}">
             <button type="submit">Reset Database</button>
         </form>
-        {% if result %}
-            <h2>Summarized Notes</h2>
-            {% for line in result %}
-                <p>{{ line|safe }}</p>
-            {% endfor %}
-        {% endif %}
+
+        <h2>Summarized Notes</h2>
+        <div id="summary-result">
+            {% if result %}
+                {% for line in result %}
+                    <p>{{ line|safe }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function toggleSidebar() {
             var sidebar = document.getElementById('sidebar');
@@ -206,6 +209,24 @@
             header.classList.toggle('expanded');
             toggleBtn.classList.toggle('active');
         }
+
+        // AJAX for summarize button
+        document.getElementById('summarize-btn').addEventListener('click', function() {
+            $.ajax({
+                type: "POST",
+                url: "/execute_function",
+                success: function(response) {
+                    var summaryResult = document.getElementById('summary-result');
+                    summaryResult.innerHTML = '';
+                    response.result.forEach(function(line) {
+                        summaryResult.innerHTML += `<p>${line}</p>`;
+                    });
+                },
+                error: function() {
+                    alert("Error summarizing notes.");
+                }
+            });
+        });
     </script>
 </body>
 </html>

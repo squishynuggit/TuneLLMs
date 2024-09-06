@@ -1,7 +1,7 @@
-import os
-from flask import Flask, request, redirect, url_for, render_template, flash
+from flask import Flask, request, redirect, url_for, render_template, flash, jsonify
 from query_document import summarize_database
 import document_loader
+import os
 import re
 
 app = Flask(__name__)
@@ -42,7 +42,7 @@ def upload_and_list_files():
         else:
             flash('Allowed file types are: pdf, txt, docx')
     
-    # Add to chromadb
+    # Add to ChromaDB
     document_loader.main()
 
     # List files in the main upload directory
@@ -66,13 +66,10 @@ def delete_file(filename):
 
     return redirect(url_for('upload_and_list_files'))
 
-### Needs improvement, could use prompt engineering and give a few examples on template
 def process_text(result):
     processed_result = []
     for line in result:
-        # Replace **bold** with <strong>bold</strong>
         line = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', line)
-        # Replace *dotpoint* with <li>dotpoint</li>
         if line.startswith('* '):
             line = f"<li>{line[2:]}</li>"
         processed_result.append(line)
@@ -83,7 +80,7 @@ def summarize():
     result = summarize_database()
     result = result.split('\n')
     result = process_text(result)
-    return render_template('upload.html', files=os.listdir(app.config['UPLOAD_FOLDER']), result=result)
+    return jsonify(result=result)
 
 @app.route('/reset', methods=['POST'])
 def reset():
